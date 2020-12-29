@@ -15,7 +15,7 @@ notesCtrl.createNewNote = async (req, res) => {
     const newNote = new Note({title, description});
     // luego guardamos la nota, al operar con la db esta es una operacion asincrona, por lo tanto usamos async await
     await newNote.save();
-    res.send('new note');
+    res.redirect('/notes');
 }
 
 notesCtrl.renderNotes = async (req, res) => {
@@ -33,8 +33,9 @@ notesCtrl.updateNote = (req, res) => {
     res.send('update note');
 }
 
-notesCtrl.deleteNote = (req, res) => {
-    res.send('delete note');
+notesCtrl.deleteNote = async (req, res) => {
+    await Note.findByIdAndDelete(req.params.id);
+    res.redirect('/notes');
 }
 
 module.exports = notesCtrl;

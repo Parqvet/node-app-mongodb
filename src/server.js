@@ -2,6 +2,7 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const morgan = require('morgan');
+const methodOverride = require('method-override');
 
 // initializations
 const app = express();
@@ -22,6 +23,8 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({
     extended: false
 }));
+// vamos a estar enviando el metodo que queremos a traves de una consulta
+app.use(methodOverride('_method'));
 
 // global variables
 
