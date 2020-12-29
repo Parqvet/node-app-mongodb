@@ -1,16 +1,28 @@
 const notesCtrl = {};
 
+const Notes = require('../models/Notes');
+// importamos el modelos de datos notes
+const Note = require('../models/Notes');
+
 notesCtrl.renderNoteForm = (req, res) => {
     res.render('notes/new-note');
 }
 
-notesCtrl.createNewNote = (req, res) => {
-    console.log(req.body);
+notesCtrl.createNewNote = async (req, res) => {
+    // obtenemos los datos que vienen de request body
+    const { title, description } = req.body;
+    // creamos una nueva nota y le pasamos los datos para guardarlo en la db
+    const newNote = new Note({title, description});
+    // luego guardamos la nota, al operar con la db esta es una operacion asincrona, por lo tanto usamos async await
+    await newNote.save();
     res.send('new note');
 }
 
-notesCtrl.renderNotes = (req, res) => {
-    res.send('render notes');
+notesCtrl.renderNotes = async (req, res) => {
+    // el metodo renderNotes es el encargado de hacer la consulta a la db
+    // una vez termine me va a devolver un arreglo de notas
+    const notes = await Notes.find().lean();
+    res.render('notes/all-notes', { notes });
 }
 
 notesCtrl.renderEditForm = (req, res) => {
