@@ -15,6 +15,9 @@ notesCtrl.createNewNote = async (req, res) => {
     const newNote = new Note({title, description});
     // luego guardamos la nota, al operar con la db esta es una operacion asincrona, por lo tanto usamos async await
     await newNote.save();
+
+    // cuando se cree una nueva nota enviamos un mensaje en la sesion del server con el modulo flash
+    req.flash('success_msg', 'Note Added Successfuly');
     res.redirect('/notes');
 }
 
@@ -33,11 +36,13 @@ notesCtrl.renderEditForm = async (req, res) => {
 notesCtrl.updateNote = async (req, res) => {
     const { title, description } = req.body;
     await Note.findByIdAndUpdate(req.params.id, {title, description});
+    req.flash('success_msg', 'Note Updated Successfuly');
     res.redirect('/notes');
 }
 
 notesCtrl.deleteNote = async (req, res) => {
     await Note.findByIdAndDelete(req.params.id);
+    req.flash('success_msg', 'Note Deleted Successfuly');
     res.redirect('/notes');
 }
 
