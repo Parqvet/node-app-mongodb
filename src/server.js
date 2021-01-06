@@ -41,6 +41,7 @@ app.use((req, res, next) => {
     // req.flash nos va a retornar el valor de succes_msg
     // una vez lo devuelva lo guardamos en la variable del servidor
     res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
     next();
 });
 
