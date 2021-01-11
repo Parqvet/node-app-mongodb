@@ -1,5 +1,7 @@
 const userCtrl = {};
 
+const passport = require('passport');
+
 // models
 const User = require('../models/User');
 
@@ -41,12 +43,23 @@ userCtrl.renderSignInForm = (req, res) => {
     res.render('users/signin');
 }
 
-userCtrl.signin = (req, res) => {
-    res.send('signin');
-}
+// el metodo authenticate puede validar cierta autenticacion que ya se ha definido, basado en lo que hemos escrito en el local strategy 
+userCtrl.signin = passport.authenticate('local', {
+    // si existe un error lo redirecciona
+    failureRedirect: '/users/signin',
+
+    // si esta todo ok
+    successRedirect: '/notes',
+
+    // cuando exista un mensaje de error usara flash
+    failureFlash: true
+});
 
 userCtrl.logout = (req, res) => {
-    res.send('logout');
+    // para cerrar la sesion
+    req.logout();
+    req.flash('success_msg', 'You are logged out now');
+    res.redirect('/users/signin');
 }
 
 module.exports = userCtrl;

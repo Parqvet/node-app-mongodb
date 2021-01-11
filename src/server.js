@@ -5,9 +5,13 @@ const morgan = require('morgan');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
 
 // initializations
 const app = express();
+
+// importar configuracion de passport
+require('./config/passport');
 
 // settings
 app.set('port', process.env.PORT || 3000);
@@ -32,6 +36,9 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+// middleware de passport
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
 
 // global variables
@@ -42,6 +49,12 @@ app.use((req, res, next) => {
     // una vez lo devuelva lo guardamos en la variable del servidor
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+
+    // guardar al usuario en una variable global para poder reutilizarlo
+    // passport lo guarda en una variable de req.user
+    // con esta variable user puedo saber si el usuario fue autenticado o no
+    res.locals.user = req.user || null;
     next();
 });
 
