@@ -13,6 +13,8 @@ notesCtrl.createNewNote = async (req, res) => {
     const { title, description } = req.body;
     // creamos una nueva nota y le pasamos los datos para guardarlo en la db
     const newNote = new Note({title, description});
+    // por cada nota que se guarde tambien se guaradara el id del usuario
+    newNote.user = req.user.id;
     // luego guardamos la nota, al operar con la db esta es una operacion asincrona, por lo tanto usamos async await
     await newNote.save();
 
@@ -24,7 +26,8 @@ notesCtrl.createNewNote = async (req, res) => {
 notesCtrl.renderNotes = async (req, res) => {
     // el metodo renderNotes es el encargado de hacer la consulta a la db
     // una vez termine me va a devolver un arreglo de notas
-    const notes = await Notes.find().lean();
+    // buscar solo las notas que le pertenecen al usuario
+    const notes = await Notes.find({user: req.user.id}).lean().sort({createdAt: 'desc'});
     res.render('notes/all-notes', { notes });
 }
 
